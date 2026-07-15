@@ -1,9 +1,4 @@
-/**
- * GET /api/virustotal/[sha256] — DART Backend
- *
- * Returns the full VirusTotal file report for a given SHA256 hash.
- * Used by the frontend to fetch detailed scan results.
- */
+
 
 import { fetchVirusTotalFile } from "@/lib/enrichment";
 

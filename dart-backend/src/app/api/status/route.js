@@ -1,9 +1,4 @@
-/**
- * GET /api/status — DART Backend
- *
- * Health check endpoint. Returns the current service status
- * and the number of stored alerts.
- */
+
 
 import { getAlerts } from "@/lib/store";
 

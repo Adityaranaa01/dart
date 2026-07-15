@@ -1,13 +1,6 @@
 "use client";
 
-/**
- * DART Frontend — Dashboard Page
- *
- * Single-page SOC dashboard with:
- * - Top nav bar: DART logo, live clock, connection status
- * - 2-column grid: AlertFeed (left), ServerStatus (right)
- * - Full-width bottom row: LogViewer + HistoricalTable
- */
+
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -24,7 +17,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* ─── Top Nav Bar ─── */}
+      {}
       <NavHeader
         rightContent={
           <div className="flex items-center gap-2 text-sm">
@@ -47,11 +40,11 @@ export default function Dashboard() {
         }
       />
 
-      {/* ─── Main Content ─── */}
+      {}
       <main className="flex-1 p-4 lg:p-6 space-y-4 lg:space-y-6 max-w-[1920px] mx-auto w-full">
-        {/* Top Row: 2-column grid */}
+        {}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
-          {/* Left: Alert Feed (wider) */}
+          {}
           <div className="lg:col-span-2">
             <AlertFeed onConnectionChange={setSseConnected} />
           </div>
@@ -61,10 +54,10 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Bottom Row: Log Viewer */}
+        {}
         <LogViewer />
 
-        {/* Full-width Bottom: Historical Table */}
+        {}
         <HistoricalTable />
       </main>
 

@@ -1,26 +1,20 @@
 "use client";
 
-/**
- * ServerStatus.jsx — DART Frontend
- *
- * Polls the dummy-server /api/health endpoint every 3 seconds.
- * Displays: status badge (ONLINE/DEGRADED/OFFLINE), requests/min,
- * blocked IPs, rate limit, and uptime counter.
- */
+
 
 import { useState, useEffect, useRef } from "react";
 
 const DUMMY_URL =
   process.env.NEXT_PUBLIC_DUMMY_SERVER_URL || "http://localhost:3002";
 
-/** Determine server status based on health response */
+
 function getStatus(data, responseTime) {
   if (!data) return "OFFLINE";
   if (responseTime > 500 || data.status !== "ok") return "DEGRADED";
   return "ONLINE";
 }
 
-/** Status color mapping */
+
 function statusStyle(status) {
   switch (status) {
     case "ONLINE":
@@ -32,7 +26,7 @@ function statusStyle(status) {
   }
 }
 
-/** Format uptime seconds to readable string */
+
 function formatUptime(seconds) {
   if (!seconds && seconds !== 0) return "—";
   const h = Math.floor(seconds / 3600);
@@ -53,7 +47,7 @@ export default function ServerStatus() {
   useEffect(() => {
     async function poll() {
       try {
-        // Abort previous request if still pending
+        
         if (controllerRef.current) controllerRef.current.abort();
         controllerRef.current = new AbortController();
         const timeoutId = setTimeout(() => controllerRef.current.abort(), 2000);
@@ -102,7 +96,7 @@ export default function ServerStatus() {
 
   return (
     <div className="card h-full flex flex-col">
-      {/* Header */}
+      {}
       <div className="flex items-center gap-2 mb-4">
         <svg className="w-5 h-5 text-[#38bdf8]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3m-19.5 0a4.5 4.5 0 01.9-2.7L5.737 5.1a3.375 3.375 0 012.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 01.9 2.7m0 0a3 3 0 01-3 3m0 3h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008zm-3 6h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008z" />
@@ -110,7 +104,7 @@ export default function ServerStatus() {
         <h2 className="text-lg font-semibold">Server Status</h2>
       </div>
 
-      {/* Status Indicator */}
+      {}
       <div className="flex flex-col items-center mb-5">
         <div
           className={`w-20 h-20 rounded-full ${style.dot} ${style.glow} flex items-center justify-center mb-3 transition-all duration-300`}

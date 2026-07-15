@@ -1,28 +1,15 @@
 #!/usr/bin/env node
 
-/**
- * ddos.js — DDoS Attack Simulator
- *
- * Fires sustained HTTP requests with spoofed X-Forwarded-For headers
- * containing known-malicious IPs. This produces real enrichment data
- * from threat intelligence APIs.
- *
- * Usage: node scripts/ddos.js
- *
- * Configuration (top of file or via env vars):
- *   TARGET_URL           — URL to attack (default: http://localhost:3002/api/data)
- *   REQUESTS_PER_SECOND  — Requests per tick (default: 10)
- *   DURATION_SECONDS     — How long to run (default: 180 = 3 minutes)
- */
 
-// ----- Configuration -----
+
+
 const TARGET_URL =
   process.env.TARGET_URL || "http://localhost:3002/api/data";
 const REQUESTS_PER_SECOND = 10;
 const DURATION_SECONDS =
   parseInt(process.env.DURATION_SECONDS, 10) || 180;
 
-// ----- Known-malicious IPs for spoofing -----
+
 const SPOOF_IPS = [
   "185.220.101.34",
   "45.142.212.100",
@@ -35,7 +22,7 @@ function randomSpoofIP() {
   return SPOOF_IPS[Math.floor(Math.random() * SPOOF_IPS.length)];
 }
 
-// ----- Stats -----
+
 let totalSent = 0;
 let totalSuccess = 0;
 let total429 = 0;
@@ -44,8 +31,8 @@ let totalError = 0;
 let tickNumber = 0;
 let first429Logged = false;
 let first403Logged = false;
-const blockedIPs = new Set();    // track which IPs are 403'd
-let consecutive403Ticks = 0;     // how many ticks were 100% blocked
+const blockedIPs = new Set();    
+let consecutive403Ticks = 0;     
 
 console.log("═".repeat(60));
 console.log("  DART DDoS Attack Simulator");
@@ -59,9 +46,7 @@ console.log("");
 
 let startTime;
 
-/**
- * Send a single request with a specific or random spoofed IP.
- */
+
 async function sendRequest(specificIP) {
   const ip = specificIP || randomSpoofIP();
   try {
@@ -80,9 +65,7 @@ async function sendRequest(specificIP) {
   }
 }
 
-/**
- * Pre-flight probe — test each IP to see if it's already blocked.
- */
+
 async function preflight() {
   console.log("  Pre-flight: checking if IPs are already blocked...\n");
   const alreadyBlocked = [];
@@ -113,9 +96,7 @@ async function preflight() {
   }
 }
 
-/**
- * Main loop — fires REQUESTS_PER_SECOND requests every 1 second.
- */
+
 async function main() {
   await preflight();
   startTime = Date.now();
@@ -125,19 +106,19 @@ async function main() {
     tickNumber++;
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(0);
 
-    // Check if duration exceeded
+    
     if (Date.now() - startTime >= DURATION_SECONDS * 1000) {
       clearInterval(interval);
       printSummary("Duration expired");
       return;
     }
 
-    // Fire REQUESTS_PER_SECOND requests in parallel
+    
     const results = await Promise.all(
       Array.from({ length: REQUESTS_PER_SECOND }, sendRequest)
     );
 
-    // Tally results
+    
     let tick403 = 0;
     for (const r of results) {
       totalSent++;
@@ -154,8 +135,8 @@ async function main() {
       }
     }
 
-    // Auto-stop: stop when 403s dominate (>70% of tick) for 3+ ticks,
-    // or when all spoofed IPs have been seen as blocked.
+    
+    
     const tick403Pct = results.length > 0 ? tick403 / results.length : 0;
     if (tick403Pct > 0.7) {
       consecutive403Ticks++;
@@ -175,7 +156,7 @@ async function main() {
       return;
     }
 
-    // Log progress
+    
     const pct200 = totalSent > 0 ? ((totalSuccess / totalSent) * 100).toFixed(0) : 0;
     const pct429 = totalSent > 0 ? ((total429 / totalSent) * 100).toFixed(0) : 0;
     const pct403 = totalSent > 0 ? ((total403 / totalSent) * 100).toFixed(0) : 0;
@@ -186,7 +167,7 @@ async function main() {
       `403=${total403} | err=${totalError}`
     );
 
-    // First-time status messages
+    
     if (total429 > 0 && !first429Logged) {
       first429Logged = true;
       console.log(

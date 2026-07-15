@@ -1,30 +1,16 @@
-/**
- * normalizer.js — DART Backend
- *
- * Takes a raw alert payload and enrichment results, then produces a
- * complete StandardAlert object as defined in CONTEXT.md.
- *
- * Risk score (0-100) is calculated using a weighted formula:
- *   - request_rate contribution: min(rate/10, 40)
- *   - abuseipdb score contribution: abuseConfidenceScore * 0.3
- *   - greynoise malicious flag: +20 if classification == "malicious"
- *   - virustotal malicious votes: min(malicious * 5, 10)
- */
+
 
 const crypto = require("crypto");
 
-/**
- * Calculate a risk score from 0-100 based on multiple enrichment factors.
- * Returns { risk_score, risk_reasoning }.
- */
+
 function calculateRisk(rawAlert, enrichment) {
-  // ── Malicious upload scoring ──
+  
   if (rawAlert.alert_type === "malicious_upload") {
     const vtFile = enrichment.virustotal_file || {};
     const detectionRate = vtFile.detection_rate || 0;
     const maliciousVotes = vtFile.malicious || 0;
 
-    // Clean files start low, flagged files start at 30
+    
     let score = maliciousVotes > 0 ? 30 : 5;
     score += Math.round(detectionRate * 0.6);
     score += Math.round(
@@ -47,15 +33,15 @@ function calculateRisk(rawAlert, enrichment) {
     return { risk_score, risk_reasoning };
   }
 
-  // ── Log4Shell scoring ──
+  
   if (rawAlert.alert_type === "log4shell_attempt") {
-    // Base score is 70 — Log4Shell is always critical
+    
     let score = 70;
 
-    // CVSS 10.0 — add 15 points for confirmed CVE
+    
     score += 15;
 
-    // GreyNoise Log4Shell scanner tag adds 10
+    
     const gnTags = enrichment.greynoise?.tags || [];
     const hasLog4ShellTag = gnTags.some((t) =>
       t.toLowerCase().includes("log4") ||
@@ -69,7 +55,7 @@ function calculateRisk(rawAlert, enrichment) {
       score += 5;
     }
 
-    // AbuseIPDB contribution capped at 5 points
+    
     score += Math.min(
       (enrichment.abuseipdb?.abuseConfidenceScore || 0) * 0.05,
       5
@@ -92,13 +78,13 @@ function calculateRisk(rawAlert, enrichment) {
     return { risk_score, risk_reasoning };
   }
 
-  // ── Standard DDoS / anomaly scoring ──
+  
   const rate = rawAlert.request_rate || 0;
   const abuseScore = enrichment.abuseipdb?.abuseConfidenceScore || 0;
   const gnClassification = enrichment.greynoise?.classification || "unknown";
   const vtMalicious = enrichment.virustotal?.malicious || 0;
 
-  // Weighted scoring
+  
   const rateContribution = Math.min(rate / 10, 40);
   const abuseContribution = abuseScore * 0.3;
   const greynoiseContribution = gnClassification === "malicious" ? 20 : 0;
@@ -109,7 +95,7 @@ function calculateRisk(rawAlert, enrichment) {
     Math.round(rateContribution + abuseContribution + greynoiseContribution + vtContribution)
   );
 
-  // Build a human-readable explanation
+  
   const parts = [];
   parts.push(`Request rate of ${rate} req/min contributed ${rateContribution.toFixed(1)} points`);
   if (abuseScore > 0) {
@@ -127,9 +113,7 @@ function calculateRisk(rawAlert, enrichment) {
   return { risk_score, risk_reasoning };
 }
 
-/**
- * Determine severity level from risk score.
- */
+
 function severityFromScore(score) {
   if (score >= 85) return "critical";
   if (score >= 60) return "high";
@@ -137,9 +121,7 @@ function severityFromScore(score) {
   return "low";
 }
 
-/**
- * Normalize a raw alert + enrichment data into a StandardAlert object.
- */
+
 function normalize(rawAlert, enrichment) {
   const { risk_score, risk_reasoning } = calculateRisk(rawAlert, enrichment);
 
@@ -154,13 +136,13 @@ function normalize(rawAlert, enrichment) {
     enrichment,
     risk_score,
     risk_reasoning,
-    selected_playbook: null,       // filled by decision tree
-    playbook_status: "pending",    // updated by executor
-    playbook_result: null,         // updated by executor
+    selected_playbook: null,       
+    playbook_status: "pending",    
+    playbook_result: null,         
     analyst_feedback: null,
   };
 
-  // Add file-specific fields for malicious_upload alerts
+  
   if (rawAlert.alert_type === "malicious_upload") {
     standardAlert.file_name = rawAlert.file_name || null;
     standardAlert.file_size = rawAlert.file_size || 0;
@@ -169,7 +151,7 @@ function normalize(rawAlert, enrichment) {
     standardAlert.upload_id = rawAlert.upload_id || null;
   }
 
-  // Add Log4Shell-specific fields
+  
   if (rawAlert.alert_type === "log4shell_attempt") {
     standardAlert.cve_id = rawAlert.cve_id;
     standardAlert.cvss_score = rawAlert.cvss_score;

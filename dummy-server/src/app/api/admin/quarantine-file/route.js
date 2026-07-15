@@ -1,9 +1,4 @@
-/**
- * POST /api/admin/quarantine-file — Dummy Server
- *
- * Quarantines a file by upload_id. Called by DART's
- * file-quarantine playbook.
- */
+
 
 import { state, addLog } from "@/lib/state";
 
@@ -20,7 +15,7 @@ export async function POST(req) {
       );
     }
 
-    // Find and update the upload record
+    
     const record = state.uploadedFiles.find(
       (f) => f.id === upload_id
     );
@@ -28,7 +23,7 @@ export async function POST(req) {
       record.status = "quarantined";
     }
 
-    // Add to quarantine list
+    
     const quarantineRecord = {
       upload_id,
       sha256,

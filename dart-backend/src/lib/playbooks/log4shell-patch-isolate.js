@@ -10,7 +10,7 @@ export async function execute(alert) {
       "CRITICAL CVE-2021-44228 detected. Starting isolation."
     );
 
-    // STEP A — Block attacking IP immediately
+    
     console.log(
       "[PLAYBOOK log4shell-patch-isolate] " +
       "Blocking attacker IP:", alert.source_ip
@@ -22,7 +22,7 @@ export async function execute(alert) {
     });
     stepsExecuted.push("block_attacker_ip");
 
-    // STEP B — Tighten rate limit to reduce attack surface
+    
     console.log(
       "[PLAYBOOK log4shell-patch-isolate] " +
       "Tightening rate limit for isolation"
@@ -37,7 +37,7 @@ export async function execute(alert) {
     );
     stepsExecuted.push("tighten_rate_limit");
 
-    // STEP C — Flag the JNDI endpoint for patching
+    
     console.log(
       "[PLAYBOOK log4shell-patch-isolate] " +
       "Flagging JNDI endpoint"
@@ -58,11 +58,11 @@ export async function execute(alert) {
     );
     stepsExecuted.push("flag_jndi_endpoint");
 
-    // STEP D — Wait 3 seconds (simulate patch application)
+    
     await new Promise(r => setTimeout(r, 3000));
     stepsExecuted.push("simulate_patch_application");
 
-    // STEP E — Restore rate limit
+    
     await fetch(
       `${DUMMY_SERVER_URL}/api/admin/set-rate-limit`,
       {
@@ -73,7 +73,7 @@ export async function execute(alert) {
     );
     stepsExecuted.push("restore_rate_limit");
 
-    // STEP F — Schedule IP unblock after 5 minutes
+    
     setTimeout(async () => {
       await fetch(
         `${DUMMY_SERVER_URL}/api/admin/unblock-ip`,
@@ -93,7 +93,7 @@ export async function execute(alert) {
     const elapsed = Date.now() - startTime;
     const gnTags = alert.enrichment?.greynoise?.tags || [];
 
-    // Generate the incident report object
+    
     const incidentReport = {
       title: "Log4Shell Exploitation Attempt Detected & Blocked",
       cve_id: "CVE-2021-44228",

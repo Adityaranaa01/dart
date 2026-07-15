@@ -1,15 +1,4 @@
-/**
- * POST /api/alerts/ingest — DART Backend
- *
- * Accepts a raw alert payload and runs the full processing pipeline:
- *   1. Parse and validate the incoming alert payload
- *   2. Enrich the source IP (GreyNoise, AbuseIPDB, GeoIP, VirusTotal)
- *   3. Normalize into a StandardAlert with risk scoring
- *   4. Execute the selected playbook
- *   5. Store the completed alert to alerts.json
- *   6. Broadcast via SSE to connected clients
- *   7. Return the completed StandardAlert object
- */
+
 
 import { enrichAll, fetchVirusTotalFile, resolveEnrichmentIP } from "@/lib/enrichment";
 import { normalize } from "@/lib/normalizer";
@@ -17,7 +6,7 @@ import { selectPlaybook } from "@/lib/decisionTree";
 import { appendAlert } from "@/lib/store";
 import { broadcastAlert, getClientCount } from "@/lib/sseManager";
 
-// Static import map for playbook executors
+
 import * as ddosMitigation from "@/lib/playbooks/ddos-mitigation";
 import * as ipBlock from "@/lib/playbooks/ip-block";
 import * as rateLimitEscalation from "@/lib/playbooks/rate-limit-escalation";
@@ -36,7 +25,7 @@ export async function POST(request) {
   let alert = null;
 
   try {
-    // ── Step 1: Parse and validate ──────────────────────────
+    
     const rawAlert = await request.json();
 
     if (!rawAlert.source_ip) {
@@ -50,10 +39,10 @@ export async function POST(request) {
       `[DART] Step 1: Alert received from ${rawAlert.source_ip} (type: ${rawAlert.alert_type})`
     );
 
-    // ── Step 2: Enrich ──────────────────────────────────────
+    
     let enrichment;
     if (rawAlert.alert_type === "malicious_upload" && rawAlert.sha256) {
-      // Run IP enrichment AND VirusTotal file hash lookup in parallel
+      
       const [ipEnrichment, fileEnrichment] = await Promise.all([
         enrichAll(resolveEnrichmentIP(rawAlert.source_ip)),
         fetchVirusTotalFile(rawAlert.sha256),
@@ -72,7 +61,7 @@ export async function POST(request) {
       );
     }
 
-    // ── Step 3: Normalize into StandardAlert ────────────────
+    
     alert = normalize(rawAlert, enrichment);
 
     const playbookId = selectPlaybook(alert);
@@ -82,7 +71,7 @@ export async function POST(request) {
       `[DART] Step 3: Normalized. Risk score: ${alert.risk_score}. Playbook: ${playbookId || "none"}`
     );
 
-    // ── Step 4: Execute the selected playbook ───────────────
+    
     if (playbookId && playbooks[playbookId]) {
       alert.playbook_status = "executing";
       console.log(`[DART] Step 4: Executing playbook ${playbookId}...`);
@@ -110,7 +99,7 @@ export async function POST(request) {
         };
       }
     } else {
-      // No playbook selected — log and monitor only
+      
       alert.playbook_status = "completed";
       alert.playbook_result = {
         playbook_id: null,
@@ -124,23 +113,23 @@ export async function POST(request) {
       );
     }
 
-    // ── Step 5: Store the completed alert ───────────────────
+    
     await appendAlert(alert);
     console.log(`[DART] Step 5: Alert stored.`);
 
-    // ── Step 6: Broadcast via SSE ───────────────────────────
+    
     const clientCount = getClientCount();
     broadcastAlert(alert);
     console.log(
       `[DART] Step 6: Broadcast sent to ${clientCount} SSE clients.`
     );
 
-    // ── Step 7: Return the completed StandardAlert ──────────
+    
     return Response.json(alert, { status: 200 });
   } catch (err) {
     console.error(`[DART] Pipeline error: ${err.message}`);
 
-    // If we have a partially built alert, store and broadcast it
+    
     if (alert) {
       alert.playbook_status = "failed";
       alert.playbook_result = {
@@ -153,7 +142,7 @@ export async function POST(request) {
         await appendAlert(alert);
         broadcastAlert(alert);
       } catch {
-        // Best effort
+        
       }
     }
 

@@ -1,10 +1,4 @@
-/**
- * POST /api/admin/set-rate-limit — Dummy Server
- *
- * Updates the server's rate limit cap.
- * Body: { limit: 50 } or { cap: 50 }
- * No auth needed — this is a demo.
- */
+
 
 import { state, addLog } from "@/lib/state";
 

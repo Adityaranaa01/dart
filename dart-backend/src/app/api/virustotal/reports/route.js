@@ -1,9 +1,4 @@
-/**
- * GET /api/virustotal/reports — DART Backend
- *
- * Returns all VirusTotal file analysis data from alerts
- * with alert_type "malicious_upload".
- */
+
 
 import { getAlerts } from "@/lib/store";
 

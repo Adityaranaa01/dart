@@ -1,6 +1,4 @@
-/**
- * DART Frontend — Root Layout
- */
+
 import "./globals.css";
 
 export const metadata = {

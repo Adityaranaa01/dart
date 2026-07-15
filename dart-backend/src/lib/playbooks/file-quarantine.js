@@ -1,17 +1,4 @@
-/**
- * file-quarantine.js — Playbook
- *
- * Triggered when a malicious file upload is detected.
- *
- * Steps:
- *   1. Quarantine the file on the dummy server
- *   2. Block the uploading IP
- *
- * The blocked IP stays blocked permanently (no auto-unblock
- * during active attack). File remains quarantined.
- *
- * Returns a PlaybookResult object (schema in CONTEXT.md).
- */
+
 
 const DUMMY_SERVER_URL =
   process.env.DUMMY_SERVER_URL || "http://localhost:3002";
@@ -24,7 +11,7 @@ async function execute(alert) {
       `[PLAYBOOK file-quarantine] Starting for file: ${alert.file_name}`
     );
 
-    // ── Step 1: Quarantine the file on dummy server ──────────
+    
     console.log(
       `[PLAYBOOK file-quarantine] Quarantining file: ${alert.sha256}`
     );
@@ -53,7 +40,7 @@ async function execute(alert) {
       );
     }
 
-    // ── Step 2: Block the uploading IP ───────────────────────
+    
     console.log(
       `[PLAYBOOK file-quarantine] Blocking IP: ${alert.source_ip}`
     );

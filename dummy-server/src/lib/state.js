@@ -1,54 +1,44 @@
-/**
- * state.js — Dummy Server
- *
- * Single mutable in-memory state object for the simulated server.
- * All state resets on container restart — that's fine for a demo.
- *
- * The anomaly detector is started as a side-effect on first import,
- * ensuring it runs whenever any route handler loads this module.
- */
+
 
 export const state = {
-  /** Server health status: "ok" | "degraded" | "offline" */
+  
   status: "ok",
 
-  /** Rolling requests per minute counter */
+  
   requestsPerMinute: 0,
 
-  /** Array of blocked IP address strings */
+  
   blockedIPs: [],
 
-  /** Max requests/min before returning 429 */
+  
   rateLimit: 100,
 
-  /** Array of { timestamp, level, message } log entries */
+  
   logs: [],
 
-  /** Server start time for uptime calculation */
+  
   uptimeStart: Date.now(),
 
-  /** Total requests ever served (for /api/data response) */
+  
   totalRequests: 0,
 
-  /** Rolling list of last 50 source IPs seen (for anomaly detector) */
+  
   recentSourceIPs: [],
 
-  /** Array of file upload scan records */
+  
   uploadedFiles: [],
 
-  /** Array of quarantined file records */
+  
   quarantinedFiles: [],
 
-  /** Total Log4Shell attempts tracked globally */
+  
   log4shellAttempts: 0,
 
-  /** Log4Shell attempts grouped by source IP */
+  
   log4shellAttemptsByIP: {},
 };
 
-/**
- * Add a log entry to the state. Keeps only the last 500 entries.
- */
+
 export function addLog(level, message) {
   state.logs.push({
     timestamp: new Date().toISOString(),
@@ -60,9 +50,7 @@ export function addLog(level, message) {
   }
 }
 
-/**
- * Track a source IP. Keeps the last 50 for frequency analysis.
- */
+
 export function addSourceIP(ip) {
   state.recentSourceIPs.push(ip);
   if (state.recentSourceIPs.length > 50) {
@@ -70,9 +58,7 @@ export function addSourceIP(ip) {
   }
 }
 
-/**
- * Add an upload record to state. Keeps only the last 100.
- */
+
 export function addUploadRecord(record) {
   state.uploadedFiles.push(record);
   if (state.uploadedFiles.length > 100) {
@@ -80,17 +66,14 @@ export function addUploadRecord(record) {
   }
 }
 
-// ----- Anomaly Detection (runs as side-effect on import) -----
+
 
 const DART_BACKEND_URL =
   process.env.DART_BACKEND_URL || "http://localhost:3001";
 
-/**
- * Find the most frequent IP in the recent list.
- * Falls back to a known-bad IP if list is empty.
- */
+
 function getMostFrequentIP(ips) {
-  if (!ips.length) return "185.220.101.34"; // fallback known-bad IP
+  if (!ips.length) return "185.220.101.34"; 
   const counts = {};
   ips.forEach((ip) => {
     counts[ip] = (counts[ip] || 0) + 1;
@@ -151,7 +134,7 @@ function startAnomalyDetector() {
   }, 10_000);
 }
 
-// Auto-start on module load (server-side only)
+
 if (typeof window === "undefined") {
   startAnomalyDetector();
 }

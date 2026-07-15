@@ -45,7 +45,7 @@ export async function fireLog4ShellAlert(
     )
   }
 
-  // Reset after 2 minutes
+  
   setTimeout(() => {
     firedIPs.delete(sourceIP)
     state.log4shellAttemptsByIP[sourceIP] = 0

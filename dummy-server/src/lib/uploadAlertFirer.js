@@ -1,12 +1,4 @@
-/**
- * uploadAlertFirer.js — Dummy Server
- *
- * Fires a malicious_upload alert to the DART backend
- * when an uploaded file contains malicious content (e.g. EICAR).
- *
- * De-duplicates by SHA256 hash — won't fire the same hash
- * more than once per 5 minutes.
- */
+
 
 import { state, addLog } from "./state.js";
 
@@ -51,7 +43,7 @@ export async function fireUploadAlert(sourceIP, uploadRecord) {
     );
   }
 
-  // Allow same hash to re-trigger after 5 minutes
+  
   setTimeout(() => {
     firedHashes.delete(uploadRecord.sha256);
   }, 300000);

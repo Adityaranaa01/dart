@@ -1,10 +1,4 @@
-/**
- * GET /api/health — Dummy Server
- *
- * Returns the full server state plus derived fields:
- * status, requestsPerMinute, blockedIPs, rateLimit,
- * uptimeSeconds, logCount.
- */
+
 
 import { state } from "@/lib/state";
 

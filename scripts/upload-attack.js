@@ -1,17 +1,8 @@
 #!/usr/bin/env node
 
-/**
- * upload-attack.js — Malicious File Upload Simulator
- *
- * Uploads files containing the EICAR test string to the dummy
- * server with spoofed X-Forwarded-For headers. The EICAR string
- * is completely harmless — just a text string — but every AV
- * engine on VirusTotal flags it as malicious.
- *
- * Usage: node scripts/upload-attack.js
- */
 
-// ----- Configuration -----
+
+
 const TARGET_URL =
   process.env.TARGET_URL || "http://localhost:3002/api/upload";
 const UPLOADS_PER_ROUND = 3;
@@ -26,12 +17,12 @@ const SPOOF_IPS = [
   "80.82.77.139",
 ];
 
-// EICAR test string — harmless, flagged by every AV engine
+
 const EICAR_PAYLOAD =
   "X5O!P%@AP[4\\PZX54(P^)7CC)7}" +
   "$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*";
 
-// Mix of EICAR files and clean files for realism
+
 const PAYLOADS = [
   {
     name: "invoice.pdf.exe",
@@ -64,7 +55,7 @@ function randomSpoofIP() {
   return SPOOF_IPS[Math.floor(Math.random() * SPOOF_IPS.length)];
 }
 
-// ----- Stats -----
+
 let totalUploads = 0;
 let totalFlagged = 0;
 let totalClean = 0;
@@ -150,14 +141,14 @@ async function main() {
       return;
     }
 
-    // Pick UPLOADS_PER_ROUND files, cycling through payloads
+    
     const uploads = [];
     for (let i = 0; i < UPLOADS_PER_ROUND; i++) {
       uploads.push(PAYLOADS[payloadIdx % PAYLOADS.length]);
       payloadIdx++;
     }
 
-    // Upload in parallel
+    
     const results = await Promise.all(uploads.map(uploadFile));
 
     let roundFlagged = 0;

@@ -7,7 +7,7 @@ import NavHeader from "../components/NavHeader";
 const BACKEND_URL =
   process.env.NEXT_PUBLIC_DART_BACKEND_URL || "http://localhost:3001";
 
-// Helper for country flags
+
 function countryFlag(code) {
   if (!code) return "";
   return code
@@ -22,21 +22,21 @@ export default function Log4ShellPage() {
   const [selectedIncident, setSelectedIncident] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Poll for incidents every 3 seconds
+  
   useEffect(() => {
     async function fetchIncidents() {
       try {
         const res = await fetch(`${BACKEND_URL}/api/alerts/history`);
         const allAlerts = await res.json();
 
-        // Filter for log4shell only
+        
         const log4shellAlerts = allAlerts.filter(
           (a) => a.alert_type === "log4shell_attempt"
         );
 
         setIncidents(log4shellAlerts);
 
-        // Auto-select first if none selected
+        
         if (log4shellAlerts.length > 0 && !selectedIncident) {
           setSelectedIncident(log4shellAlerts[0]);
         }
@@ -52,7 +52,7 @@ export default function Log4ShellPage() {
     return () => clearInterval(interval);
   }, [selectedIncident]);
 
-  // Derived stats
+  
   const totalAttempts = incidents.reduce(
     (acc, alert) => acc + (alert.match_count || 1),
     0
@@ -79,10 +79,10 @@ export default function Log4ShellPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#0f172a] text-[#f1f5f9] font-sans">
-      {/* ─── Top Nav Bar ─── */}
+      {}
       <NavHeader />
 
-      {/* ─── SECTION A: Critical Alert Banner ─── */}
+      {}
       <div className="bg-[#1e293b] border-b border-[#334155] px-6 py-4">
         <div className="max-w-[1920px] mx-auto flex items-center gap-4">
           <div className="text-3xl text-[#ef4444]">⚠</div>
@@ -430,13 +430,13 @@ export default function Log4ShellPage() {
                     "Upgrade Apache Log4j to version 2.17.1 or later. Set log4j2.formatMsgNoLookups=true as interim mitigation."}
                 </p>
                 <div className="flex gap-4 text-xs font-medium">
-                  <a href="https://nvd.nist.gov/vuln/detail/CVE-2021-44228" target="_blank" rel="noopener noreferrer" className="text-[#38bdf8] hover:underline flex items-center gap-1">
+                  <a href="https:
                     → NVD Detail
                   </a>
                   <a href="https://logging.apache.org/log4j/2.x/security.html" target="_blank" rel="noopener noreferrer" className="text-[#38bdf8] hover:underline flex items-center gap-1">
                     → Apache Security Bulletin
                   </a>
-                  <a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener noreferrer" className="text-[#38bdf8] hover:underline flex items-center gap-1">
+                  <a href="https:
                     → CISA KEV Catalog
                   </a>
                 </div>

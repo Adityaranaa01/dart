@@ -1,12 +1,4 @@
-/**
- * anomalyDetector.js — Dummy Server
- *
- * Background job that checks server state every 10 seconds.
- * If requestsPerMinute > 200, sets status to "degraded" and
- * POSTs an alert to the DART Backend ingest endpoint.
- *
- * Started via instrumentation.js (Next.js 14 server startup hook).
- */
+
 
 import { state, addLog } from "./state";
 
@@ -15,12 +7,9 @@ const DART_BACKEND_URL =
 
 let detectorInterval = null;
 
-/**
- * Find the most frequent IP in the recent list.
- * Falls back to a known-bad IP if list is empty.
- */
+
 function getMostFrequentIP(ips) {
-  if (!ips.length) return "185.220.101.34"; // fallback known-bad IP
+  if (!ips.length) return "185.220.101.34"; 
   const counts = {};
   ips.forEach((ip) => {
     counts[ip] = (counts[ip] || 0) + 1;
@@ -28,12 +17,9 @@ function getMostFrequentIP(ips) {
   return Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
 }
 
-/**
- * Start the anomaly detection background loop.
- * Runs every 10 seconds. Safe to call multiple times (idempotent).
- */
+
 export function startDetector() {
-  if (detectorInterval) return; // Already running
+  if (detectorInterval) return; 
 
   console.log(`[anomalyDetector] Starting anomaly detection (10s interval). DART backend: ${DART_BACKEND_URL}`);
 
@@ -44,7 +30,7 @@ export function startDetector() {
 
         const attackerIP = getMostFrequentIP(state.recentSourceIPs);
 
-        // Gather last 20 log messages for context
+        
         const recentLogs = state.logs
           .slice(-20)
           .map((l) => `[${l.level}] ${l.message}`);
@@ -60,7 +46,7 @@ export function startDetector() {
         addLog("ERROR", `Anomaly detected — ${state.requestsPerMinute} req/min from ${attackerIP}`);
         console.log(`[anomalyDetector] Anomaly: ${state.requestsPerMinute} req/min from ${attackerIP} — sending alert...`);
 
-        // POST alert to DART Backend
+        
         try {
           const res = await fetch(`${DART_BACKEND_URL}/api/alerts/ingest`, {
             method: "POST",

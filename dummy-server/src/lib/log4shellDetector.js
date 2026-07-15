@@ -1,13 +1,13 @@
-// Patterns that match Log4Shell and its common obfuscations
+
 const LOG4SHELL_PATTERNS = [
-  /\$\{jndi:/i,                          // basic pattern
-  /\$\{j\$\{\}ndi:/i,                   // obfuscated: j${}ndi
-  /\$\{jndi:(ldap|rmi|dns|iiop|ldaps|dnsca):\/\//i,  // protocols
-  /\$\{(\$\{\::-j\}|\$\{upper:j\})/i,  // case obfuscation
+  /\$\{jndi:/i,                          
+  /\$\{j\$\{\}ndi:/i,                   
+  /\$\{jndi:(ldap|rmi|dns|iiop|ldaps|dnsca):\/\//i,  
+  /\$\{(\$\{\::-j\}|\$\{upper:j\})/i,  
   /\$\{lower:j\}\$\{lower:n\}\$\{lower:d\}\$\{lower:i\}/i
 ]
 
-// Headers attackers commonly inject Log4Shell into
+
 const SCANNED_HEADERS = [
   "user-agent",
   "x-api-version",
@@ -36,12 +36,12 @@ export function detectLog4Shell(headers) {
           value: value.substring(0, 500),
           pattern: pattern.toString()
         })
-        break // one match per header is enough
+        break 
       }
     }
   }
 
-  // Also scan all headers for any jndi pattern as catch-all
+  
   for (const [name, value] of headers.entries()) {
     if (SCANNED_HEADERS.includes(name)) continue
     if (/\$\{jndi:/i.test(value)) {
@@ -61,7 +61,7 @@ export function detectLog4Shell(headers) {
 }
 
 export function extractJNDIUrl(value) {
-  // Extract the JNDI callback URL from the payload
+  
   const match = value.match(
     /\$\{jndi:([^}]+)\}/i
   )

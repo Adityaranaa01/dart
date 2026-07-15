@@ -1,11 +1,3 @@
-# ============================================================
-# Dockerfile — DART Backend
-#
-# Multi-stage build for the Next.js backend service.
-# Uses Node 20 Alpine for minimal image size.
-# Outputs standalone build for Docker deployment.
-# ============================================================
-
 # ----- Stage 1: Builder -----
 FROM node:20-alpine AS builder
 

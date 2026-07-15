@@ -8,7 +8,7 @@ export default function NavHeader({ rightContent }) {
   const pathname = usePathname();
   const [clock, setClock] = useState("");
 
-  // Live clock — updates every second
+  
   useEffect(() => {
     const tick = () => {
       const now = new Date();
@@ -35,7 +35,7 @@ export default function NavHeader({ rightContent }) {
   return (
     <nav className="sticky top-0 z-50 flex items-center justify-between px-6 py-3 border-b border-[#334155] bg-[#0f172a]/90 backdrop-blur-md">
       <div className="flex items-center gap-3">
-        {/* DART Logo */}
+        {}
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#38bdf8] to-[#818cf8] flex items-center justify-center">
             <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
@@ -85,7 +85,7 @@ export default function NavHeader({ rightContent }) {
 
       <div className="flex items-center gap-4">
         {rightContent}
-        {/* Clock */}
+        {}
         {clock && (
           <div className="text-sm font-mono text-[#94a3b8] bg-[#1e293b] px-3 py-1.5 rounded-lg border border-[#334155]">
             {clock}

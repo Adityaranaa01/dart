@@ -1,13 +1,6 @@
 "use client";
 
-/**
- * DART Frontend — VirusTotal File Analysis Reports
- *
- * Dedicated page showing complete scan results for all
- * malicious upload detections. Split-panel layout:
- * - Left: Reports list with detection rate bars
- * - Right: Full VirusTotal report with engine breakdown
- */
+
 
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
@@ -16,7 +9,7 @@ import NavHeader from "../components/NavHeader";
 const BACKEND_URL =
   process.env.NEXT_PUBLIC_DART_BACKEND_URL || "http://localhost:3001";
 
-// ── Helpers ──────────────────────────────────────────────────
+
 function pct(n) {
   return typeof n === "number" ? n : 0;
 }
@@ -83,7 +76,7 @@ export default function VirusTotalReports() {
   const vtFile = selected?.virustotal_file || {};
   const engines = vtFile.engines || {};
 
-  // Summary stats
+  
   const totalScans = reports.length;
   const quarantined = reports.filter(
     (r) => r.playbook_status === "completed"
@@ -100,7 +93,7 @@ export default function VirusTotalReports() {
     ? Math.max(...reports.map((r) => pct(r.risk_score)))
     : 0;
 
-  // Filtered engine list
+  
   const filteredEngines = useMemo(() => {
     let entries = Object.entries(engines);
     if (engineFilter === "malicious") {
@@ -128,7 +121,7 @@ export default function VirusTotalReports() {
     (enginePage + 1) * ENGINES_PER_PAGE
   );
 
-  // Reset engine page when filter/search changes
+  
   useEffect(() => {
     setEnginePage(0);
   }, [engineFilter, engineSearch, selectedIdx]);
@@ -150,10 +143,10 @@ export default function VirusTotalReports() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* ─── Nav Bar ─── */}
+      {}
       <NavHeader />
 
-      {/* ─── Page Header ─── */}
+      {}
       <div className="px-6 pt-6 pb-4">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
@@ -200,7 +193,7 @@ export default function VirusTotalReports() {
         </div>
       </div>
 
-      {/* ─── Main Content: Split Panel ─── */}
+      {}
       <main className="flex-1 px-6 pb-6">
         {loading ? (
           <div className="flex items-center justify-center h-64 text-[#94a3b8]">

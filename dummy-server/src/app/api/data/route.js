@@ -1,10 +1,4 @@
-/**
- * GET /api/data — Dummy Server
- *
- * Simulates a real production endpoint.
- * Subject to rate limiting and IP blocking via middleware.
- * Returns { message, timestamp, requestsServed }.
- */
+
 
 import { state, addLog } from "@/lib/state";
 import { checkRequest } from "@/lib/middleware";
@@ -19,7 +13,7 @@ export async function GET(req) {
     req.headers.get("x-real-ip") ||
     "unknown";
 
-  // Scan ALL headers for Log4Shell payloads BEFORE any limits
+  
   const log4shellResult = detectLog4Shell(req.headers);
 
   if (log4shellResult.detected) {
@@ -38,13 +32,13 @@ export async function GET(req) {
       `jndi_url: ${jndiUrl || 'unknown'}`
     );
 
-    // Fire alert on FIRST attempt — this is critical severity
-    // do not wait for multiple attempts like XSS
+    
+    
     if (state.log4shellAttemptsByIP[sourceIP] === 1) {
       fireLog4ShellAlert(sourceIP, log4shellResult, jndiUrl);
     }
 
-    // Return 400 — do not reflect the payload back ever
+    
     return Response.json(
       {
         error: "request blocked",
@@ -54,7 +48,7 @@ export async function GET(req) {
     );
   }
 
-  // Run through rate limit / IP block checks
+  
   const blocked = checkRequest(req);
   if (blocked) return blocked;
 

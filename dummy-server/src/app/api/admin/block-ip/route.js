@@ -1,10 +1,4 @@
-/**
- * POST /api/admin/block-ip — Dummy Server
- *
- * Adds the given IP to the blocked IPs list.
- * Body: { ip: "1.2.3.4" }
- * No auth needed — this is a demo.
- */
+
 
 import { state, addLog } from "@/lib/state";
 

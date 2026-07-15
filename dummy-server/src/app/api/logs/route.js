@@ -1,9 +1,4 @@
-/**
- * GET /api/logs — Dummy Server
- *
- * Returns the last 100 log entries from the server's
- * in-memory log array.
- */
+
 
 import { state } from "@/lib/state";
 

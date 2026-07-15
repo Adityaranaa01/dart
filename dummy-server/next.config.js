@@ -1,8 +1,5 @@
-/**
- * next.config.js — Dummy Server
- * Standalone output for Docker. CORS enabled for DART services.
- */
-/** @type {import('next').NextConfig} */
+
+
 const nextConfig = {
   output: "standalone",
   experimental: {

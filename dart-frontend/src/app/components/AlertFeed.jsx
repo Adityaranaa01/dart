@@ -1,20 +1,13 @@
 "use client";
 
-/**
- * AlertFeed.jsx — DART Frontend
- *
- * Connects to DART Backend SSE endpoint via EventSource.
- * Displays last 20 alerts as cards in reverse-chronological order.
- * New cards animate in from the top.
- * Shows empty state with pulsing radar icon when no alerts.
- */
+
 
 import { useState, useEffect, useRef } from "react";
 
 const BACKEND_URL =
   process.env.NEXT_PUBLIC_DART_BACKEND_URL || "http://localhost:3001";
 
-/** Risk score color mapping */
+
 function riskColor(score) {
   if (score > 80) return { bg: "bg-red-500/20", text: "text-red-400", border: "border-red-500/30" };
   if (score > 50) return { bg: "bg-orange-500/20", text: "text-orange-400", border: "border-orange-500/30" };
@@ -22,7 +15,7 @@ function riskColor(score) {
   return { bg: "bg-green-500/20", text: "text-green-400", border: "border-green-500/30" };
 }
 
-/** Playbook status badge */
+
 function StatusBadge({ status }) {
   const styles = {
     completed: "bg-green-500/20 text-green-400",

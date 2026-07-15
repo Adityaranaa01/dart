@@ -1,13 +1,8 @@
-/**
- * GET /api/alerts/history — DART Backend
- *
- * Returns the full contents of src/data/alerts.json as a JSON array.
- * Used by the frontend's Historical Alerts Table.
- */
+
 
 import { getAlerts } from "@/lib/store";
 
-// Prevent Next.js from caching this route response
+
 export const dynamic = "force-dynamic";
 
 export async function GET() {

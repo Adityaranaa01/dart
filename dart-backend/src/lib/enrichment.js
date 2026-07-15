@@ -1,31 +1,18 @@
-/**
- * enrichment.js — DART Backend
- *
- * Provides four async enrichment functions that call external threat
- * intelligence APIs. Each is wrapped in try/catch with a safe fallback
- * so that a single API failure never breaks the pipeline.
- *
- * enrichAll(ip) runs all four in parallel via Promise.all.
- * If the IP is internal/Docker, it's swapped for a known-bad IP.
- *
- * When API keys are placeholder values ("your_key_here"), the system
- * falls back to curated mock data for known IPs so the demo still
- * produces realistic enrichment results.
- */
 
-// ----- Environment variables with fallback defaults -----
+
+
 const GREYNOISE_API_KEY = process.env.GREYNOISE_API_KEY || "";
 const ABUSEIPDB_API_KEY = process.env.ABUSEIPDB_API_KEY || "";
 const VIRUSTOTAL_API_KEY = process.env.VIRUSTOTAL_API_KEY || "";
 
-// Check if keys are real or placeholder
+
 const hasGreyNoise = GREYNOISE_API_KEY && GREYNOISE_API_KEY !== "your_key_here";
 const hasAbuseIPDB = ABUSEIPDB_API_KEY && ABUSEIPDB_API_KEY !== "your_key_here";
 const hasVirusTotal = VIRUSTOTAL_API_KEY && VIRUSTOTAL_API_KEY !== "your_key_here";
 
 console.log(`[enrichment] API keys: GreyNoise=${hasGreyNoise ? "✓" : "✗ (mock)"} AbuseIPDB=${hasAbuseIPDB ? "✓" : "✗ (mock)"} VirusTotal=${hasVirusTotal ? "✓" : "✗ (mock)"} GeoIP=✓ (free)`);
 
-// ----- Known-bad IPs for internal IP fallback -----
+
 const KNOWN_BAD_IPS = [
   "185.220.101.34",
   "45.142.212.100",
@@ -34,8 +21,8 @@ const KNOWN_BAD_IPS = [
   "80.82.77.139",
 ];
 
-// ----- Curated mock data for known malicious IPs -----
-// Used when API keys are placeholder values so the demo works out of the box.
+
+
 const MOCK_DATA = {
   "185.220.101.34": {
     greynoise: { classification: "malicious", name: "Tor Exit Node", tags: ["tor", "vpn"] },
@@ -64,10 +51,7 @@ const MOCK_DATA = {
   },
 };
 
-/**
- * If the IP is internal (localhost, Docker, private), substitute
- * a known-bad IP so enrichment APIs return real data.
- */
+
 function resolveEnrichmentIP(ip) {
   const internalPatterns = [
     /^127\./,
@@ -87,17 +71,15 @@ function resolveEnrichmentIP(ip) {
   return ip;
 }
 
-// ----- Default fallback objects for when an API call fails -----
+
 const GREYNOISE_DEFAULT = { classification: "unknown", name: "unknown", tags: [] };
 const ABUSEIPDB_DEFAULT = { abuseConfidenceScore: 0, totalReports: 0, countryCode: "unknown" };
 const GEOIP_DEFAULT = { country: "unknown", city: "unknown", isp: "unknown" };
 const VIRUSTOTAL_DEFAULT = { malicious: 0, suspicious: 0, harmless: 0 };
 
-/**
- * Fetch GreyNoise data for a given IP address.
- */
+
 async function fetchGreyNoise(ip) {
-  // Use mock data if no real API key
+  
   if (!hasGreyNoise) {
     return MOCK_DATA[ip]?.greynoise || { ...GREYNOISE_DEFAULT };
   }
@@ -119,9 +101,7 @@ async function fetchGreyNoise(ip) {
   }
 }
 
-/**
- * Fetch AbuseIPDB data for a given IP address.
- */
+
 async function fetchAbuseIPDB(ip) {
   if (!hasAbuseIPDB) {
     return MOCK_DATA[ip]?.abuseipdb || { ...ABUSEIPDB_DEFAULT };
@@ -145,9 +125,7 @@ async function fetchAbuseIPDB(ip) {
   }
 }
 
-/**
- * Fetch GeoIP data from ip-api.com (no key required, 45 req/min free tier).
- */
+
 async function fetchGeoIP(ip) {
   try {
     const res = await fetch(
@@ -169,9 +147,7 @@ async function fetchGeoIP(ip) {
   }
 }
 
-/**
- * Fetch VirusTotal reputation data for a given IP address.
- */
+
 async function fetchVirusTotal(ip) {
   if (!hasVirusTotal) {
     return MOCK_DATA[ip]?.virustotal || { ...VIRUSTOTAL_DEFAULT };
@@ -195,10 +171,7 @@ async function fetchVirusTotal(ip) {
   }
 }
 
-/**
- * Run all four enrichment functions in parallel.
- * Resolves internal IPs to known-bad IPs for real API data.
- */
+
 async function enrichAll(ip) {
   const enrichIP = resolveEnrichmentIP(ip);
   console.log(`[enrichment] Enriching IP: ${enrichIP} (original: ${ip})`);
@@ -221,11 +194,11 @@ async function enrichAll(ip) {
   };
 }
 
-// ----- EICAR SHA256 hash (pre-computed) -----
+
 const EICAR_SHA256 =
   "275a021bbfb6489e54d471899f7db9d1663fc695ec2fe2a2c4538aabf651fd0f";
 
-// ----- Mock VirusTotal file report for EICAR -----
+
 const MOCK_VT_FILE_EICAR = {
   found: true,
   sha256: EICAR_SHA256,
@@ -313,9 +286,7 @@ const MOCK_VT_FILE_EICAR = {
   raw_stats: { malicious: 62, suspicious: 0, harmless: 0, undetected: 6 },
 };
 
-/**
- * Default fallback for VirusTotal file lookups.
- */
+
 function getVirusTotalFileDefault() {
   return {
     found: false,
@@ -331,12 +302,9 @@ function getVirusTotalFileDefault() {
   };
 }
 
-/**
- * Fetch VirusTotal file report by SHA256 hash.
- * Separate from the IP reputation check (fetchVirusTotal).
- */
+
 async function fetchVirusTotalFile(sha256) {
-  // Mock data for EICAR when no real API key
+  
   if (!hasVirusTotal) {
     if (sha256 === EICAR_SHA256) {
       console.log(`[enrichment] VT File: Using EICAR mock data for ${sha256.substring(0, 16)}...`);
@@ -376,7 +344,7 @@ async function fetchVirusTotalFile(sha256) {
     const results = data.data?.attributes?.last_analysis_results || {};
     const meta = data.data?.attributes || {};
 
-    // Extract per-engine results
+    
     const engines = {};
     for (const [engineName, engineResult] of Object.entries(results)) {
       engines[engineName] = {

@@ -1,10 +1,4 @@
-/**
- * POST /api/admin/restart — Dummy Server
- *
- * Resets server state: clears blockedIPs, resets rateLimit to 100,
- * sets status to "ok", resets requestsPerMinute to 0.
- * Used by DART playbooks to restore service after mitigation.
- */
+
 
 import { state, addLog } from "@/lib/state";
 

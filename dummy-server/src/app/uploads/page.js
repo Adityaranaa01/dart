@@ -1,13 +1,6 @@
 "use client";
 
-/**
- * Dummy Server — /uploads page
- *
- * Two-step upload flow:
- *   1. Select a file (drag-drop or browse) — shows file info
- *   2. Click "Upload & Scan" to send to DART / VirusTotal
- *   3. Button becomes a link to the VT Reports dashboard
- */
+
 
 import { useState } from "react";
 import Link from "next/link";
@@ -19,7 +12,7 @@ export default function UploadsPage() {
   const [dragOver, setDragOver] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploading, setUploading] = useState(false);
-  const [uploadResult, setUploadResult] = useState(null); // null | { success, sha256, ... } | { error }
+  const [uploadResult, setUploadResult] = useState(null); 
   const [history, setHistory] = useState([]);
 
   function selectFile(file) {
@@ -91,7 +84,7 @@ export default function UploadsPage() {
         minHeight: "100vh",
       }}
     >
-      {/* Nav */}
+      {}
       <nav
         style={{
           display: "flex",
@@ -118,7 +111,7 @@ export default function UploadsPage() {
         </div>
       </nav>
 
-      {/* Page Header */}
+      {}
       <section style={{ maxWidth: "700px", margin: "0 auto", padding: "2.5rem 2rem 0", textAlign: "center" }}>
         <h1 style={{
           fontSize: "2rem",
@@ -145,10 +138,10 @@ export default function UploadsPage() {
         </span>
       </section>
 
-      {/* Upload Area */}
+      {}
       <section style={{ maxWidth: "700px", margin: "2rem auto 0", padding: "0 2rem" }}>
 
-        {/* Step 1: File selection zone */}
+        {}
         <div
           onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
           onDragLeave={() => setDragOver(false)}
@@ -179,7 +172,7 @@ export default function UploadsPage() {
           />
 
           {selectedFile ? (
-            /* File selected — show info */
+            
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "1rem", minWidth: 0 }}>
                 <div style={{
@@ -254,7 +247,7 @@ export default function UploadsPage() {
           )}
         </div>
 
-        {/* Step 2: Upload button / VT link */}
+        {}
         {selectedFile && !uploadResult && (
           <button
             onClick={handleUpload}
@@ -293,7 +286,7 @@ export default function UploadsPage() {
           </button>
         )}
 
-        {/* Step 3: Upload complete — link to VT dashboard */}
+        {}
         {uploadResult && uploadResult.success && (
           <div style={{
             background: "rgba(34,197,94,0.06)",
@@ -369,7 +362,7 @@ export default function UploadsPage() {
           </div>
         )}
 
-        {/* Error state */}
+        {}
         {uploadResult && !uploadResult.success && (
           <div style={{
             background: "rgba(239,68,68,0.06)",

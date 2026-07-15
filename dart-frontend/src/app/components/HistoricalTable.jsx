@@ -1,19 +1,13 @@
 "use client";
 
-/**
- * HistoricalTable.jsx — DART Frontend
- *
- * Fetches from DART Backend /api/alerts/history on mount, refreshes every 10s.
- * Sortable table columns, expandable rows, and JSON export.
- * Row colors: red bg if severity==critical, orange if high.
- */
+
 
 import { useState, useEffect, useCallback } from "react";
 
 const BACKEND_URL =
   process.env.NEXT_PUBLIC_DART_BACKEND_URL || "http://localhost:3001";
 
-/** Sortable column defs */
+
 const COLUMNS = [
   { key: "timestamp", label: "Time", sortable: true },
   { key: "source_ip", label: "Source IP", sortable: true },
@@ -24,7 +18,7 @@ const COLUMNS = [
   { key: "country", label: "Country", sortable: true },
 ];
 
-/** Risk score color styles */
+
 function riskBadge(score) {
   if (score > 80) return "bg-red-500/20 text-red-400";
   if (score > 50) return "bg-orange-500/20 text-orange-400";
@@ -32,14 +26,14 @@ function riskBadge(score) {
   return "bg-green-500/20 text-green-400";
 }
 
-/** Row background based on severity */
+
 function rowBg(severity) {
   if (severity === "critical") return "bg-red-500/5 hover:bg-red-500/10";
   if (severity === "high") return "bg-orange-500/5 hover:bg-orange-500/10";
   return "hover:bg-[#273548]";
 }
 
-/** Status badge styles */
+
 function statusColor(status) {
   switch (status) {
     case "completed": return "text-green-400";
@@ -49,7 +43,7 @@ function statusColor(status) {
   }
 }
 
-/** Format ISO timestamp for table display */
+
 function formatTime(iso) {
   if (!iso) return "—";
   const d = new Date(iso);
@@ -68,7 +62,7 @@ export default function HistoricalTable() {
   const [sortDir, setSortDir] = useState("desc");
   const [expandedId, setExpandedId] = useState(null);
 
-  // Fetch alerts
+  
   const fetchAlerts = useCallback(async () => {
     try {
       const res = await fetch(`${BACKEND_URL}/api/alerts/history`);
@@ -92,7 +86,7 @@ export default function HistoricalTable() {
     return () => clearInterval(interval);
   }, [fetchAlerts]);
 
-  // Sort logic
+  
   const handleSort = (key) => {
     if (sortKey === key) {
       setSortDir((d) => (d === "asc" ? "desc" : "asc"));
@@ -119,7 +113,7 @@ export default function HistoricalTable() {
       : String(vb).localeCompare(String(va));
   });
 
-  // Export as JSON
+  
   const handleExport = () => {
     const blob = new Blob([JSON.stringify(alerts, null, 2)], {
       type: "application/json",
@@ -134,7 +128,7 @@ export default function HistoricalTable() {
 
   return (
     <div className="card">
-      {/* Header */}
+      {}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <svg className="w-5 h-5 text-[#38bdf8]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>

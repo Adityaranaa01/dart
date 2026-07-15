@@ -1,12 +1,6 @@
 "use client";
 
-/**
- * Dummy Server — Homepage with Live Traffic Monitor
- *
- * Shows the "Acme Corp" branding PLUS a real-time traffic
- * dashboard that polls /api/health and /api/logs so the user
- * can see DDoS attack requests arriving on this server.
- */
+
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
@@ -69,7 +63,7 @@ function TrafficMonitor() {
       margin: "0 auto 3rem",
       padding: "0 2rem",
     }}>
-      {/* Header */}
+      {}
       <div style={{
         display: "flex",
         alignItems: "center",
@@ -218,7 +212,7 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero */}
+      {}
       <section style={{
         textAlign: "center",
         padding: "4rem 2rem 2rem",
@@ -270,10 +264,10 @@ export default function Home() {
         </Link>
       </section>
 
-      {/* Live Traffic Monitor */}
+      {}
       <TrafficMonitor />
 
-      {/* Stats */}
+      {}
       <section style={{
         display: "grid",
         gridTemplateColumns: "repeat(3, 1fr)",
@@ -300,7 +294,7 @@ export default function Home() {
         ))}
       </section>
 
-      {/* Footer */}
+      {}
       <footer style={{
         textAlign: "center",
         padding: "2rem",

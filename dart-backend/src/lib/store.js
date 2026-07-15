@@ -1,27 +1,18 @@
-/**
- * store.js — DART Backend
- *
- * File-based alert storage using /app/src/data/alerts.json.
- * Uses an absolute path to ensure compatibility with Next.js
- * standalone mode and Docker volume mounts.
- *
- * Provides appendAlert(alert) and getAlerts() functions.
- * Uses a simple async mutex flag to handle concurrency safely.
- */
+
 
 const fs = require("fs/promises");
 const path = require("path");
 
-// Use an absolute path that matches the Docker volume mount.
-// In Docker: /app/src/data/alerts.json
-// Locally: {cwd}/src/data/alerts.json
+
+
+
 const DATA_DIR = path.resolve(process.cwd(), "src", "data");
 const ALERTS_FILE = path.join(DATA_DIR, "alerts.json");
 
-// Log the resolved path on first load for debugging
+
 console.log(`[store] Alerts file path: ${ALERTS_FILE}`);
 
-// Simple async mutex to avoid concurrent read/write corruption
+
 let locked = false;
 
 async function acquireLock() {
@@ -35,9 +26,7 @@ function releaseLock() {
   locked = false;
 }
 
-/**
- * Ensure the data directory and alerts.json file exist.
- */
+
 async function ensureFile() {
   try {
     await fs.access(ALERTS_FILE);
@@ -47,10 +36,7 @@ async function ensureFile() {
   }
 }
 
-/**
- * Read and return all stored alerts as a parsed array.
- * Always reads fresh from disk (no caching).
- */
+
 async function getAlerts() {
   await ensureFile();
   try {
@@ -63,9 +49,7 @@ async function getAlerts() {
   }
 }
 
-/**
- * Append a new alert object to the alerts.json file.
- */
+
 async function appendAlert(alert) {
   await acquireLock();
   try {

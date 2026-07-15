@@ -1,9 +1,4 @@
-/**
- * DART Backend — Root Page
- * 
- * This service is an API-only backend. All endpoints are under /api.
- * This page is only shown if someone navigates to the root URL directly.
- */
+
 
 export default function Home() {
   return (

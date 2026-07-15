@@ -1,20 +1,13 @@
 "use client";
 
-/**
- * LogViewer.jsx — DART Frontend
- *
- * Polls the dummy-server /api/logs endpoint every 5 seconds.
- * Shows last 50 log lines in a terminal-style scrollable box.
- * Color-codes: red for ERROR, yellow for WARN, green for INFO.
- * Toggle button to pause/resume polling.
- */
+
 
 import { useState, useEffect, useRef } from "react";
 
 const DUMMY_URL =
   process.env.NEXT_PUBLIC_DUMMY_SERVER_URL || "http://localhost:3002";
 
-/** Determine line color based on log level content */
+
 function lineColor(line) {
   const upper = line.toUpperCase();
   if (upper.includes("ERROR") || upper.includes("FATAL") || upper.includes("CRITICAL")) {
@@ -48,7 +41,7 @@ export default function LogViewer() {
           return;
         }
         const data = await res.json();
-        // data may be an array of strings or objects
+        
         const lines = Array.isArray(data)
           ? data.map((item) => (typeof item === "string" ? item : JSON.stringify(item)))
           : [];
@@ -66,7 +59,7 @@ export default function LogViewer() {
     return () => clearInterval(interval);
   }, [paused]);
 
-  // Auto-scroll to bottom on new logs
+  
   useEffect(() => {
     if (scrollRef.current && !paused) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -75,7 +68,7 @@ export default function LogViewer() {
 
   return (
     <div className="card">
-      {/* Header */}
+      {}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <svg className="w-5 h-5 text-[#38bdf8]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
